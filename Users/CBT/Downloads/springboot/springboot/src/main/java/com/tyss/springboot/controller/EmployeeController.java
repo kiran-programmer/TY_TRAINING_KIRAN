@@ -1,6 +1,5 @@
 package com.tyss.springboot.controller;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -29,8 +28,8 @@ public class EmployeeController {
 
 	@Autowired
 	private EmployeeService service;
-	
-	private static final Logger LOGGER=LoggerFactory.getLogger(SpringbootApplication.class);
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(SpringbootApplication.class);
 
 	@PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<EmployeeBean> addEmployee(@Valid @RequestBody EmployeeBean bean) {
@@ -76,20 +75,13 @@ public class EmployeeController {
 	}
 
 	@GetMapping(path = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public EmployeeResponse getEmployee(@PathVariable("id") int id) {
-		EmployeeResponse response = new EmployeeResponse();
+	public ResponseEntity<EmployeeBean> getEmployee(@PathVariable("id") int id) {
 		EmployeeBean bean = service.getEmployee(id);
 		if (bean != null) {
-			response.setStatusCode(201);
-			response.setMessage("Success");
-			response.setDescription("Data found in the DB");
-			response.setEmployeeBeans(Arrays.asList(bean));
+			return new ResponseEntity<EmployeeBean>(bean, HttpStatus.OK);
 		} else {
-			response.setStatusCode(401);
-			response.setMessage("Failure");
-			response.setDescription("Data not found in the DB");
+			return new ResponseEntity<EmployeeBean>(HttpStatus.NOT_FOUND);
 		}
-		return response;
 	}
 
 	@GetMapping(path = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
